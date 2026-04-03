@@ -1,11 +1,18 @@
-import { Inter } from "next/font/google";
+import { Manrope, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import { siteContent } from "./site-content";
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap"
+});
+
+const notoSerif = Noto_Serif_SC({
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+  preload: false
 });
 
 export const metadata = {
@@ -16,7 +23,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="zh-CN">
-      <body className={`${inter.variable} antialiased`}>{children}</body>
+      <body className={`${manrope.variable} ${notoSerif.variable} antialiased`}>{children}</body>
     </html>
   );
 }

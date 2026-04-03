@@ -3,16 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --bg-base: #ffffff;
-  --bg-soft: #f8fafc;
-  --text-primary: #1e293b;
-  --text-muted: #475569;
-  --primary: #8b5cf6;
-  --secondary: #8b5cf6;
+  --bg-base: #f3efe7;
+  --bg-soft: #fbf8f2;
+  --paper: rgba(255, 252, 246, 0.8);
+  --text-primary: #1c1815;
+  --text-muted: #5f564e;
+  --text-soft: #8a7e74;
+  --primary: #b86b45;
+  --secondary: #31231a;
+  --line: rgba(63, 44, 28, 0.14);
+  --line-strong: rgba(63, 44, 28, 0.3);
+  --accent-glow: rgba(184, 107, 69, 0.18);
 }
 
 * {
-  border-color: #e2e8f0;
+  box-sizing: border-box;
+  border-color: var(--line);
 }
 
 html,
@@ -20,14 +26,80 @@ body {
   min-height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  background: var(--bg-base);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 28%),
+    radial-gradient(circle at 85% 12%, rgba(184, 107, 69, 0.1), transparent 22%),
+    linear-gradient(180deg, #f7f2ea 0%, #f2ede5 42%, #ece6dd 100%);
   color: var(--text-primary);
-  font-family: var(--font-sans), Inter, "Segoe UI", sans-serif;
+  font-family: var(--font-sans), "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+::selection {
+  background: rgba(184, 107, 69, 0.18);
+}
+
+.font-display {
+  font-family: var(--font-display), serif;
+}
+
+.section-fade {
+  opacity: 0;
+  animation: fade-up 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.08s;
+}
+
+.delay-2 {
+  animation-delay: 0.16s;
+}
+
+.delay-3 {
+  animation-delay: 0.24s;
+}
+
+.delay-4 {
+  animation-delay: 0.32s;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .section-fade {
+    opacity: 1;
+  }
 }
