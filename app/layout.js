@@ -1,5 +1,6 @@
 import { Manrope, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
+import BuildVersionGuard from "./components/build-version-guard";
 import { siteContent } from "./site-content";
 import RuntimeErrorMonitor from "./components/runtime-error-monitor";
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
         <meta httpEquiv="Expires" content="0" />
       </head>
       <body className={`${manrope.variable} ${notoSerif.variable} antialiased`}>
+        <BuildVersionGuard />
         <RuntimeErrorMonitor />
         {children}
       </body>

@@ -43,6 +43,8 @@ jobs:
             echo "NEXT_PUBLIC_BASE_PATH=/$repo_name" >> "$GITHUB_ENV"
           fi
 
+          echo "NEXT_PUBLIC_BUILD_VERSION=${GITHUB_SHA}" >> "$GITHUB_ENV"
+
       - name: Install dependencies
         run: npm ci
 
