@@ -166,7 +166,7 @@ export default function Home() {
                   <div className="aspect-square overflow-hidden border border-[rgba(63,44,28,0.16)] bg-[rgba(255,252,246,0.8)] transition duration-300 group-hover:-translate-y-1 group-hover:border-[color:var(--primary)] group-hover:shadow-[0_18px_32px_-28px_rgba(28,24,21,0.7)]">
                     <div className="flex h-full items-center justify-center px-3 text-center text-[11px] uppercase tracking-[0.2em] text-[var(--text-soft)]">
                       {item.src ? (
-                        <img src={withBasePath(item.src)} alt={item.alt || item.label} className="h-full w-full object-cover bg-white" />
+                        <img src={withBasePath(item.src)} alt={item.alt || item.label} className="h-full w-full object-contain bg-white p-2" />
                       ) : (
                         item.label
                       )}
