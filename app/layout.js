@@ -1,6 +1,7 @@
 import { Manrope, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import { siteContent } from "./site-content";
+import RuntimeErrorMonitor from "./components/runtime-error-monitor";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -23,7 +24,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="zh-CN">
-      <body className={`${manrope.variable} ${notoSerif.variable} antialiased`}>{children}</body>
+      <head>
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
+      </head>
+      <body className={`${manrope.variable} ${notoSerif.variable} antialiased`}>
+        <RuntimeErrorMonitor />
+        {children}
+      </body>
     </html>
   );
 }

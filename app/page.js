@@ -1,5 +1,65 @@
 import { siteContent } from "./site-content";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+function withBasePath(path) {
+  if (!path || !path.startsWith("/")) {
+    return path;
+  }
+
+  return `${basePath}${path}`;
+}
+
+function normalizeHref(href) {
+  if (!href) {
+    return "#";
+  }
+
+  if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+    return href;
+  }
+
+  if (href.includes("@")) {
+    return `mailto:${href}`;
+  }
+
+  return href;
+}
+
+function renderTextWithLinks(text) {
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+  const isUrl = (value) => /^https?:\/\/[^\s]+$/.test(value);
+
+  return text.split("\n").map((line, lineIndex) => {
+    const parts = line.split(urlPattern);
+
+    return (
+      <p
+        key={`${line}-${lineIndex}`}
+        className="text-[15px] leading-8 text-[var(--text-muted)] md:text-[17px] md:leading-9"
+      >
+        {parts.map((part, partIndex) => {
+          if (isUrl(part)) {
+            return (
+              <a
+                key={`${part}-${partIndex}`}
+                href={part}
+                target="_blank"
+                rel="noreferrer"
+                className="break-all text-[var(--primary)] underline decoration-[rgba(184,107,69,0.45)] underline-offset-4 transition hover:text-[var(--secondary)]"
+              >
+                {part}
+              </a>
+            );
+          }
+
+          return <span key={`${part}-${partIndex}`}>{part}</span>;
+        })}
+      </p>
+    );
+  });
+}
+
 export default function Home() {
   const { leftColumn, rightColumn } = siteContent;
   const hasAvatar = Boolean(leftColumn.avatar?.src);
@@ -54,7 +114,7 @@ export default function Home() {
                 <div className="absolute inset-[6px] rounded-full border border-[rgba(184,107,69,0.35)]" />
                 {hasAvatar ? (
                   <img
-                    src={leftColumn.avatar.src}
+                    src={withBasePath(leftColumn.avatar.src)}
                     alt={leftColumn.avatar.alt || "头像"}
                     className="relative z-10 h-full w-full rounded-full object-cover"
                   />
@@ -72,18 +132,22 @@ export default function Home() {
             </div>
 
             <div className="section-fade delay-1 space-y-2 border-t border-[color:var(--line)] pt-6">
-              {leftColumn.links.map((link) => (
-                <a
-                  key={link.label}
-                  className="group flex items-center justify-between border-b border-[rgba(63,44,28,0.08)] py-3 text-sm text-[var(--text-muted)] transition-colors duration-300 hover:text-[var(--secondary)]"
-                  href={link.href}
-                  target={link.href.startsWith("http") ? "_blank" : undefined}
-                  rel={link.href.startsWith("http") ? "noreferrer" : undefined}
-                >
-                  <span>{link.label}</span>
-                  <span className="text-base text-[var(--primary)] transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
-                </a>
-              ))}
+              {leftColumn.links.map((link) => {
+                const resolvedHref = normalizeHref(link.href);
+
+                return (
+                  <a
+                    key={link.label}
+                    className="group flex items-center justify-between border-b border-[rgba(63,44,28,0.08)] py-3 text-sm text-[var(--text-muted)] transition-colors duration-300 hover:text-[var(--secondary)]"
+                    href={resolvedHref}
+                    target={resolvedHref.startsWith("http") ? "_blank" : undefined}
+                    rel={resolvedHref.startsWith("http") ? "noreferrer" : undefined}
+                  >
+                    <span>{link.label}</span>
+                    <span className="text-base text-[var(--primary)] transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                  </a>
+                );
+              })}
             </div>
 
             <a
@@ -102,7 +166,7 @@ export default function Home() {
                   <div className="aspect-square overflow-hidden border border-[rgba(63,44,28,0.16)] bg-[rgba(255,252,246,0.8)] transition duration-300 group-hover:-translate-y-1 group-hover:border-[color:var(--primary)] group-hover:shadow-[0_18px_32px_-28px_rgba(28,24,21,0.7)]">
                     <div className="flex h-full items-center justify-center px-3 text-center text-[11px] uppercase tracking-[0.2em] text-[var(--text-soft)]">
                       {item.src ? (
-                        <img src={item.src} alt={item.alt || item.label} className="h-full w-full object-contain bg-white p-2" />
+                        <img src={withBasePath(item.src)} alt={item.alt || item.label} className="h-full w-full object-cover bg-white" />
                       ) : (
                         item.label
                       )}
@@ -123,7 +187,7 @@ export default function Home() {
               >
                 <div className="space-y-3">
                   <p className="text-[11px] uppercase tracking-[0.32em] text-[var(--text-soft)]">{section.indexLabel}</p>
-                  <h2 className="font-display text-[clamp(1.8rem,3vw,2.8rem)] leading-[1.04] tracking-[-0.04em] text-[var(--secondary)]">
+                  <h2 className="font-display text-[clamp(1.55rem,2.6vw,2.35rem)] leading-[1.08] tracking-[-0.035em] text-[var(--secondary)]">
                     {section.title}
                   </h2>
                 </div>
@@ -136,12 +200,14 @@ export default function Home() {
                           <p key={line}>{line}</p>
                         ))}
                       </div>
-                      <p className="border-l border-[color:var(--line)] pl-5 text-[15px] leading-8 text-[var(--text-muted)] md:text-[17px] md:leading-9">
-                        {section.note}
-                      </p>
+                      {section.note ? (
+                        <p className="border-l border-[color:var(--line)] pl-5 text-[15px] leading-8 text-[var(--text-muted)] md:text-[17px] md:leading-9">
+                          {section.note}
+                        </p>
+                      ) : null}
                     </>
                   ) : (
-                    <p className="text-[15px] leading-8 text-[var(--text-muted)] md:text-[17px] md:leading-9">{section.body}</p>
+                    renderTextWithLinks(section.body)
                   )}
                 </div>
               </article>
